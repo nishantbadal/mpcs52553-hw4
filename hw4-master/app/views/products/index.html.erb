@@ -1,0 +1,55 @@
+<div class="row">
+
+  <% @products.each do |p| %>
+    <% specReviews = Review.where(product_id: p.id) %>
+    <% counter = 0 %>
+    <% total = 0.0 %>
+    <% specReviews.each do |s| %>
+        <% total += s.rating %>
+        <% counter = counter + 1 %>
+    <% end %>
+    <% total = total / counter %>
+
+  <!-- Product Thumbnail -->
+  <div class="col-sm-6 col-md-3">
+    <div class="thumbnail">
+
+      <% photo_url = p.photo_url %>
+      <% if photo_url.blank? %>
+      <%   photo_url = "http://via.placeholder.com/350x350?text=no+photo" %>
+      <% end %>
+
+      <%= link_to image_tag(photo_url),
+                  "/products/#{p.id}",
+                  alt: "Echo Dot", class: 'img-responsive' %>
+
+      <div class="caption">
+        <h4><%= link_to p.title, "/products/#{p.id}"%></h4>
+        <% i = 0 %>
+        <% star = '' %>
+      
+        <% while i < 5 do %>
+            <% if i < total.round %>
+                <% star << '&bigstar;' %>
+            <% else %>
+                <% star << '&star;' %>
+            <% end %>
+            <% i += 1 %>
+        <% end %>
+        <p class="rating"><%= star.html_safe %> <%= total %></p>
+        <p><%= counter %> reviews.</p>
+        <p>Sold by: <%= link_to 'Cookie Monster', '#' %></p>
+
+        <p>
+          <%= truncate p.description, length: 40 %>
+          <%= link_to "[see more]", '/products/1' %>
+        </p>
+        <p class="price"><%= number_to_currency(p.price / 100.0) %></p>
+        <p><a href="#" class="btn btn-primary" role="button">Buy Now</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <% end %>
+</div>
